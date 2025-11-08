@@ -7,7 +7,7 @@ import hashlib
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
-from config import DB_PATH, DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_PASSWORD
+from config.cfg import DB_PATH, DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_PASSWORD
 
 
 def init_db() -> None:

@@ -6,11 +6,10 @@ import tkinter as tk
 from tkinter import messagebox, ttk, simpledialog
 from datetime import datetime, timedelta
 
-import db
-import utils
-import config
-from models.resident_pydantic import ResidentPydantic
-from models.resident_model import Resident
+from src.database import db
+from src.tool import utils
+from src.models.resident_pydantic import ResidentPydantic
+from src.models.resident_model import Resident
 
 
 class AdminWindow:

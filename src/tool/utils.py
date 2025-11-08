@@ -6,7 +6,7 @@ from datetime import datetime
 import math
 from typing import Optional
 
-from config import TIME_FORMAT, PARKING_RATE_PER_HOUR
+from config.cfg import TIME_FORMAT, PARKING_RATE_PER_HOUR
 
 
 def calc_fee(entry_time: str, exit_time: str) -> float:

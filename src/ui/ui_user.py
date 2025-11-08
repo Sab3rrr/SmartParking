@@ -6,8 +6,8 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from datetime import datetime
 
-import db
-import utils
+from src.database import db
+from src.tool import utils
 
 
 class UserWindow:
@@ -36,8 +36,9 @@ class UserWindow:
         else:
             self.root.title("智慧停车场 - 访客端")
         
-        self.root.geometry("700x500")
+        self.root.geometry("800x600")
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
+        self.root.minsize(700, 500)  # 设置最小窗口大小
         
         # 窗口居中显示
         self._center_window()
@@ -88,38 +89,52 @@ class UserWindow:
             self.visitor_plate_var = tk.StringVar()
             ttk.Entry(top_frame, textvariable=self.visitor_plate_var, width=15).pack(side=tk.LEFT, padx=10)
         
-        # 功能按钮区域
+        # 功能按钮区域 - 使用网格布局实现响应式设计
         button_frame = ttk.Frame(main_frame)
-        button_frame.pack(pady=20)
+        button_frame.pack(pady=20, fill=tk.X)
         
-        # 进场登记按钮
-        entry_btn = ttk.Button(button_frame, text="进场登记", command=self._entry_register, width=15)
-        entry_btn.pack(side=tk.LEFT, padx=10)
+        # 配置网格布局的权重，使按钮能够均匀分布
+        for i in range(3):
+            button_frame.columnconfigure(i, weight=1)
         
-        # 离场结算按钮
-        exit_btn = ttk.Button(button_frame, text="离场结算", command=self._exit_settlement, width=15)
-        exit_btn.pack(side=tk.LEFT, padx=10)
+        # 第一行按钮
+        entry_btn = ttk.Button(button_frame, text="进场登记", command=self._entry_register)
+        entry_btn.grid(row=0, column=0, padx=10, pady=5, sticky="ew")
         
-        # 查询费用按钮
-        query_btn = ttk.Button(button_frame, text="当前费用查询", command=self._query_current_fee, width=15)
-        query_btn.pack(side=tk.LEFT, padx=10)
+        exit_btn = ttk.Button(button_frame, text="离场结算", command=self._exit_settlement)
+        exit_btn.grid(row=0, column=1, padx=10, pady=5, sticky="ew")
         
+        query_btn = ttk.Button(button_frame, text="当前费用查询", command=self._query_current_fee)
+        query_btn.grid(row=0, column=2, padx=10, pady=5, sticky="ew")
+        
+        # 第二行按钮
         if self.is_resident:
-            # 充值按钮
-            recharge_btn = ttk.Button(button_frame, text="充值", command=self._recharge, width=15)
-            recharge_btn.pack(side=tk.LEFT, padx=10)
+            recharge_btn = ttk.Button(button_frame, text="充值", command=self._recharge)
+            recharge_btn.grid(row=1, column=0, padx=10, pady=5, sticky="ew")
             
-            # 查看记录按钮
-            records_btn = ttk.Button(button_frame, text="查看记录", command=self._view_records, width=15)
-            records_btn.pack(side=tk.LEFT, padx=10)
-        
-        # 退出登录按钮
-        logout_btn = ttk.Button(button_frame, text="退出登录", command=self._logout, width=12)
-        logout_btn.pack(side=tk.RIGHT, padx=10)
+            records_btn = ttk.Button(button_frame, text="查看记录", command=self._view_records)
+            records_btn.grid(row=1, column=1, padx=10, pady=5, sticky="ew")
+            
+            # 退出登录按钮放在居民模式的第二行第三列
+            logout_btn = ttk.Button(button_frame, text="退出登录", command=self._logout)
+            logout_btn.grid(row=1, column=2, padx=10, pady=5, sticky="ew")
+        else:
+            # 访客模式的退出登录按钮居中显示在第二行
+            logout_btn = ttk.Button(button_frame, text="退出登录", command=self._logout)
+            logout_btn.grid(row=1, column=1, padx=10, pady=5, sticky="ew")
         
         # 信息显示区域
-        self.info_text = tk.Text(main_frame, height=15, width=80, font=("微软雅黑", 12))
-        self.info_text.pack(fill=tk.BOTH, expand=True, pady=10)
+        info_frame = ttk.Frame(main_frame)
+        info_frame.pack(fill=tk.BOTH, expand=True, pady=10)
+        
+        # 添加滚动条
+        scrollbar = ttk.Scrollbar(info_frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        self.info_text = tk.Text(info_frame, height=15, width=80, font=("微软雅黑", 12), 
+                                 yscrollcommand=scrollbar.set, wrap=tk.WORD)
+        self.info_text.pack(fill=tk.BOTH, expand=True)
+        scrollbar.config(command=self.info_text.yview)
         self.info_text.config(state=tk.DISABLED)
     
     def _append_info(self, text):

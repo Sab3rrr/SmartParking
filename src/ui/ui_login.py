@@ -6,12 +6,12 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from datetime import datetime
 
-import db
-import utils
-from ui.ui_user import UserWindow
-from ui.ui_admin import AdminWindow
-from models.resident_pydantic import ResidentPydantic
-from models.resident_model import Resident
+from src.database import db
+from src.tool import utils
+from src.ui.ui_user import UserWindow
+from src.ui.ui_admin import AdminWindow
+from src.models.resident_pydantic import ResidentPydantic
+from src.models.resident_model import Resident
 
 
 class LoginWindow:
